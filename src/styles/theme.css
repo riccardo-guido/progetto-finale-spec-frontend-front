@@ -19,23 +19,7 @@ body {
   padding: 2rem;
 }
 
-.card {
-  background-color: white;
-  border: 1px solid var(--border-gray);
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease;
-}
-
-#comparison-container .card {
-  flex: 1 1 300px;
-  max-width: 400px;
-}
-
-.card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+/*# THEME */
 
 button {
   background-color: var(--accent-blue);
@@ -46,10 +30,6 @@ button {
   cursor: pointer;
   transition: background-color 0.2s ease;
   margin-left: 10px;
-}
-
-button:hover {
-  background-color: #2563eb;
 }
 
 nav {
@@ -76,6 +56,29 @@ a {
   color: var(--accent-blue);
 }
 
+button:hover {
+  background-color: #2563eb;
+}
+
+/*# LAYOUT */
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card {
+  background-color: white;
+  border: 1px solid var(--border-gray);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+#comparison-container .card {
+  flex: 1 1 300px;
+  max-width: 400px;
+}
+
 .comparison {
   display: flex;
   gap: 2rem;
@@ -86,9 +89,44 @@ a {
 
 .card-image,
 .detail-image {
-  width: 200px;
+  width: 180px;
   height: auto;
   border-radius: 6px;
   margin-bottom: 1rem;
   object-fit: cover;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.filters {
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.compare {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.selectors {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.detail {
+  text-align: center;
+}
+
+.detail-image {
+  width: 300px;
+  height: auto;
+  margin-bottom: 1rem;
 }

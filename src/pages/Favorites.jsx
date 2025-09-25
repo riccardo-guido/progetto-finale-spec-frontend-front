@@ -15,6 +15,7 @@ export default function Favorites() {
       <div className="grid">
         {favorites.map((record) => (
           <div key={record.id} className="card">
+            <img src={record.image} alt={record.title} className="card-image" />
             <h3>{record.title}</h3>
             <p>{record.category}</p>
             <Link to={`/detail/${record.id}`}>Dettagli</Link>
