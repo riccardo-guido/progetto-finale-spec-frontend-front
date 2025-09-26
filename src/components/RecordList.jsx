@@ -2,23 +2,22 @@ import { useState, useEffect } from "react";
 import RecordCard from "./RecordCard";
 import { BASE_URL } from "../config";
 import imageMap from "../services/imageMap";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function RecordList() {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
+
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("title-asc");
+  const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
     const fetchData = async () => {
-      let query = `${BASE_URL}/smartphones?search=${search}`;
+      let query = `${BASE_URL}/smartphones?search=${debouncedSearch}`;
       if (category) query += `&category=${category}`;
       const res = await fetch(query);
       const data = await res.json();
-      const enriched = data.map((record) => ({
-        ...record,
-        image: imageMap[record.id] || "/images/placeholder.jpeg",
-      }));
 
       let sorted = [...data];
       if (sort === "title-asc")
@@ -30,10 +29,15 @@ export default function RecordList() {
       if (sort === "category-desc")
         sorted.sort((a, b) => b.category.localeCompare(a.category));
 
+      const enriched = sorted.map((record) => ({
+        ...record,
+        image: imageMap[record.id] || "/images/placeholder.jpg",
+      }));
+
       setRecords(enriched);
     };
     fetchData();
-  }, [search, category, sort]);
+  }, [debouncedSearch, category, sort]);
 
   return (
     <div>
