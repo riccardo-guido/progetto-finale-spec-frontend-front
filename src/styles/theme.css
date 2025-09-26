@@ -116,9 +116,8 @@ button:hover {
 .selectors {
   display: flex;
   justify-content: center;
+  margin-bottom: 1rem;
   gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
 }
 
 .detail {
@@ -129,4 +128,11 @@ button:hover {
   width: 300px;
   height: auto;
   margin-bottom: 1rem;
+}
+
+.empty-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6b7280; /* grigio tech */
+  margin-top: 2rem;
 }

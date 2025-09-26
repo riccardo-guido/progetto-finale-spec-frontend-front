@@ -63,9 +63,13 @@ export default function RecordList() {
       </div>
 
       <div className="grid">
-        {records.map((record) => (
-          <RecordCard key={record.id} record={record} />
-        ))}
+        {records.length > 0 ? (
+          records.map((record) => (
+            <RecordCard key={record.id} record={record} />
+          ))
+        ) : (
+          <p className="empty-message">Nessun risultato trovato.</p>
+        )}
       </div>
     </div>
   );
