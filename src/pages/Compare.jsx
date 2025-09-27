@@ -3,10 +3,9 @@ import { BASE_URL } from "../config";
 
 export default function Compare() {
   const [records, setRecords] = useState([]);
-  const [firstId, setFirstId] = useState("");
-  const [secondId, setSecondId] = useState("");
-  const [firstRecord, setFirstRecord] = useState(null);
-  const [secondRecord, setSecondRecord] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
+
+  const [selectedRecords, setSelectedRecords] = useState([]);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -18,108 +17,78 @@ export default function Compare() {
   }, []);
 
   useEffect(() => {
-    const fetchRecord = async (id, setter) => {
-      if (!id) return setter(null);
-      const res = await fetch(`${BASE_URL}/smartphones/${id}`);
-      const data = await res.json();
-      setter(data.smartphone);
+    const fetchSelected = async () => {
+      const promises = selectedIds.map(async (id) => {
+        const res = await fetch(`${BASE_URL}/smartphones/${id}`);
+        const data = await res.json();
+        return data.smartphone;
+      });
+      const results = await Promise.all(promises);
+      setSelectedRecords(results);
     };
-    fetchRecord(firstId, setFirstRecord);
-    fetchRecord(secondId, setSecondRecord);
-  }, [firstId, secondId]);
+    fetchSelected();
+  }, [selectedIds]);
+
+  const handleToggle = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   return (
     <div className="container">
       <div className="compare">
         <h2>Confronta Smartphone</h2>
 
-        <div className="selectors">
-          <select value={firstId} onChange={(e) => setFirstId(e.target.value)}>
-            <option value="">Seleziona primo</option>
-            {records.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.title}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={secondId}
-            onChange={(e) => setSecondId(e.target.value)}
-          >
-            <option value="">Seleziona secondo</option>
-            {records.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.title}
-              </option>
-            ))}
-          </select>
+        <div className="selector-list">
+          {records.map((r) => (
+            <label key={r.id} className="selector-item">
+              <input
+                type="checkbox"
+                value={r.id}
+                checked={selectedIds.includes(r.id)}
+                onChange={() => handleToggle(r.id)}
+              />
+              {r.title}
+            </label>
+          ))}
         </div>
 
         <div className="comparison-grid">
-          {!firstRecord && !secondRecord ? (
+          {selectedRecords.length === 0 ? (
             <p className="empty-message">
-              Seleziona almeno due smartphone da confrontare.
+              📊 Seleziona uno o più smartphone da confrontare.
             </p>
           ) : (
             <div className="comparison" id="comparison-container">
-              {firstRecord && (
-                <div className="card">
+              {selectedRecords.map((record) => (
+                <div key={record.id} className="card">
                   <img
-                    src={firstRecord.image}
-                    alt={firstRecord.title}
+                    src={record.image}
+                    alt={record.title}
                     className="card-image"
                   />
-                  <h3>{firstRecord.title}</h3>
+                  <h3>{record.title}</h3>
                   <p>
-                    <strong>Categoria:</strong> {firstRecord.category}
+                    <strong>Categoria:</strong> {record.category}
                   </p>
                   <p>
-                    <strong>Brand:</strong> {firstRecord.brand}
+                    <strong>Brand:</strong> {record.brand}
                   </p>
                   <p>
-                    <strong>Prezzo:</strong> €{firstRecord.price}
+                    <strong>Prezzo:</strong> €{record.price}
                   </p>
                   <p>
-                    <strong>Anno:</strong> {firstRecord.releaseYear}
+                    <strong>Anno:</strong> {record.releaseYear}
                   </p>
                   <p>
-                    <strong>Display:</strong> {firstRecord.screenSize}
+                    <strong>Display:</strong> {record.screenSize}
                   </p>
                   <p>
-                    <strong>Batteria:</strong> {firstRecord.battery}
-                  </p>
-                </div>
-              )}
-
-              {secondRecord && (
-                <div className="card">
-                  <img
-                    src={secondRecord.image}
-                    alt={secondRecord.title}
-                    className="card-image"
-                  />
-                  <h3>{secondRecord.title}</h3>
-                  <p>
-                    <strong>Categoria:</strong> {secondRecord.category}
-                  </p>
-                  <p>
-                    <strong>Brand:</strong> {secondRecord.brand}
-                  </p>
-                  <p>
-                    <strong>Prezzo:</strong> €{secondRecord.price}
-                  </p>
-                  <p>
-                    <strong>Anno:</strong> {secondRecord.releaseYear}
-                  </p>
-                  <p>
-                    <strong>Display:</strong> {secondRecord.screenSize}
-                  </p>
-                  <p>
-                    <strong>Batteria:</strong> {secondRecord.battery}
+                    <strong>Batteria:</strong> {record.battery}
                   </p>
                 </div>
-              )}
+              ))}
             </div>
           )}
         </div>

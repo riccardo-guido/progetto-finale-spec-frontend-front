@@ -72,11 +72,31 @@ button:hover {
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.2s ease;
+  flex: 1 1 300px;
+  max-width: 400px;
 }
 
 #comparison-container .card {
   flex: 1 1 300px;
   max-width: 400px;
+}
+
+.selector-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.selector-item {
+  background-color: #f3f4f6;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .comparison {
