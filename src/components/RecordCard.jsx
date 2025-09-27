@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { FavoritesContext } from "../context/FavoritesContext";
+import FavoriteButton from "./FavoritesButton";
 
 export default function RecordCard({ record }) {
   const { favorites, toggleFavorite } = useContext(FavoritesContext);
@@ -12,10 +13,12 @@ export default function RecordCard({ record }) {
 
       <h3>{record.title}</h3>
       <p>{record.category}</p>
-      <Link to={`/detail/${record.id}`}>Dettagli</Link>
-      <button onClick={() => toggleFavorite(record)}>
-        {isFav ? "💔 Rimuovi" : "❤️ Preferito"}
-      </button>
+      <div className="card-footer">
+        <Link to={`/detail/${record.id}`} className="details-link">
+          Dettagli
+        </Link>
+        <FavoriteButton isFav={isFav} onToggle={() => toggleFavorite(record)} />
+      </div>
     </div>
   );
 }
