@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../config";
+import { fetchAllSmartphones, fetchSmartphoneById } from "../services/api";
 
 export default function Compare() {
   const [records, setRecords] = useState([]);
@@ -9,24 +9,34 @@ export default function Compare() {
 
   useEffect(() => {
     const fetchAll = async () => {
-      const res = await fetch(`${BASE_URL}/smartphones`);
-      const data = await res.json();
-      setRecords(data);
+      try {
+        const dataRaw = await fetchAllSmartphones();
+        const data = Array.isArray(dataRaw)
+          ? dataRaw
+          : dataRaw.smartphones || dataRaw.data || [];
+        setRecords(data);
+      } catch (err) {
+        console.error("Errore caricamento lista smartphone:", err);
+      }
     };
     fetchAll();
   }, []);
 
   useEffect(() => {
     const fetchSelected = async () => {
-      const promises = selectedIds.map(async (id) => {
-        const res = await fetch(`${BASE_URL}/smartphones/${id}`);
-        const data = await res.json();
-        return data.smartphone;
-      });
-      const results = await Promise.all(promises);
-      setSelectedRecords(results);
+      try {
+        const promises = selectedIds.map(async (id) => {
+          const data = await fetchSmartphoneById(id);
+          return data.smartphone || data.data || data;
+        });
+        const results = await Promise.all(promises);
+        setSelectedRecords(results);
+      } catch (err) {
+        console.error("Errore caricamento dettagli selezionati:", err);
+      }
     };
-    fetchSelected();
+    if (selectedIds.length > 0) fetchSelected();
+    else setSelectedRecords([]);
   }, [selectedIds]);
 
   const handleToggle = (id) => {

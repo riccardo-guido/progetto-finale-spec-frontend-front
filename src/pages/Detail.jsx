@@ -1,25 +1,33 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../config";
+import { fetchSmartphoneById } from "../services/api";
 
 export default function Detail() {
   const { id } = useParams();
   const [record, setRecord] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchRecord = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const res = await fetch(`${BASE_URL}/smartphones/${id}`);
-        const data = await res.json();
-        setRecord(data.smartphone);
-      } catch (error) {
-        console.error("Errore nel fetch:", error);
+        const data = await fetchSmartphoneById(id);
+        const smartphone = data.smartphone || data.data || data;
+        setRecord(smartphone);
+      } catch (err) {
+        setError(err.message || "Errore nel fetch");
+      } finally {
+        setLoading(false);
       }
     };
-    fetchRecord();
+    if (id) fetchRecord();
   }, [id]);
 
-  if (!record) return <p>Caricamento...</p>;
+  if (loading) return <p>Caricamento...</p>;
+  if (error) return <p className="empty-message">Errore: {error}</p>;
+  if (!record) return <p className="empty-message">Smartphone non trovato.</p>;
 
   return (
     <div className="detail">

@@ -5,12 +5,23 @@ export const FavoritesContext = createContext();
 
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem("favorites");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem("favorites");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      // If stored value is corrupted, remove it and fallback to empty array
+      localStorage.removeItem("favorites");
+      return [];
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favorites));
+    try {
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+    } catch {
+      // ignore localStorage write errors (e.g. quota exceeded)
+      console.error("Could not save favorites to localStorage");
+    }
   }, [favorites]);
 
   const toggleFavorite = (item) => {

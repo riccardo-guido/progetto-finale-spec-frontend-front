@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { FavoritesContext } from "../context/FavoritesContext";
-import { Link } from "react-router-dom";
+import RecordCard from "../components/RecordCard";
 
 export default function Favorites() {
-  const { favorites, toggleFavorite } = useContext(FavoritesContext);
+  const { favorites } = useContext(FavoritesContext);
 
   return (
     <div className="container">
@@ -12,19 +12,7 @@ export default function Favorites() {
         {favorites.length > 0 ? (
           <div className="grid">
             {favorites.map((record) => (
-              <div key={record.id} className="card">
-                <img
-                  src={record.image}
-                  alt={record.title}
-                  className="card-image"
-                />
-                <h3>{record.title}</h3>
-                <p>{record.category}</p>
-                <Link to={`/detail/${record.id}`}>Dettagli</Link>
-                <button onClick={() => toggleFavorite(record)}>
-                  💔 Rimuovi
-                </button>
-              </div>
+              <RecordCard key={record.id} record={record} />
             ))}
           </div>
         ) : (
