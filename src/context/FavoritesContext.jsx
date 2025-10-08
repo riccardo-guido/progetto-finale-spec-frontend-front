@@ -9,7 +9,6 @@ export const FavoritesProvider = ({ children }) => {
       const saved = localStorage.getItem("favorites");
       return saved ? JSON.parse(saved) : [];
     } catch {
-      // If stored value is corrupted, remove it and fallback to empty array
       localStorage.removeItem("favorites");
       return [];
     }
@@ -19,7 +18,6 @@ export const FavoritesProvider = ({ children }) => {
     try {
       localStorage.setItem("favorites", JSON.stringify(favorites));
     } catch {
-      // ignore localStorage write errors (e.g. quota exceeded)
       console.error("Could not save favorites to localStorage");
     }
   }, [favorites]);

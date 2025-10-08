@@ -1,23 +1,14 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
 import Favorites from "./pages/Favorites";
 import Compare from "./pages/Compare";
+import Header from "./components/Header";
 
 function App() {
   return (
     <BrowserRouter>
-      <header>
-        <nav>
-          <h1>📱 Smartphone Comparator</h1>
-          <div>
-            <Link to="/">Home</Link>
-            <Link to="/favorites">Preferiti</Link>
-            <Link to="/compare">Comparatore</Link>
-          </div>
-        </nav>
-      </header>
-
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/detail/:id" element={<Detail />} />
