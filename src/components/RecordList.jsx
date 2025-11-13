@@ -1,7 +1,16 @@
-import { useState, useEffect } from "react";
+function debounce(callback, delay) {
+  let timer;
+  return (value) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      callback(value);
+    }, delay);
+  };
+}
+
+import { useState, useEffect, useCallback } from "react";
 import RecordCard from "./RecordCard";
 import imageMap from "../services/imageMap";
-import { useDebounce } from "../hooks/useDebounce";
 import { fetchAllSmartphones } from "../services/api";
 
 export default function RecordList() {
@@ -9,10 +18,15 @@ export default function RecordList() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("title-asc");
-  const debouncedSearch = useDebounce(search, 500);
+
+  const debouncedSetSearch = useCallback(
+    debounce((value) => {
+      setSearch(value);
+    }, 500),
+    []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,13 +34,11 @@ export default function RecordList() {
       setError(null);
       try {
         const dataRaw = await fetchAllSmartphones();
-        const data = Array.isArray(dataRaw)
-          ? dataRaw
-          : dataRaw.smartphones || dataRaw.data || [];
+        const data = Array.isArray(dataRaw) ? dataRaw : [];
 
         const filtered = data.filter((r) => {
-          const matchesSearch = debouncedSearch
-            ? r.title.toLowerCase().includes(debouncedSearch.toLowerCase())
+          const matchesSearch = search
+            ? r.title.toLowerCase().includes(search.toLowerCase())
             : true;
           const matchesCategory = category ? r.category === category : true;
           return matchesSearch && matchesCategory;
@@ -54,8 +66,9 @@ export default function RecordList() {
         setLoading(false);
       }
     };
+
     fetchData();
-  }, [debouncedSearch, category, sort]);
+  }, [search, category, sort]);
 
   return (
     <div>
@@ -63,8 +76,7 @@ export default function RecordList() {
         <input
           type="text"
           placeholder="Cerca per titolo..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => debouncedSetSearch(e.target.value)}
         />
         <select onChange={(e) => setCategory(e.target.value)}>
           <option value="">Tutte le categorie</option>
